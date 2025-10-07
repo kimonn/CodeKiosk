@@ -8,6 +8,16 @@ This document provides instructions for deploying the Digital Signage System (Co
 - npm 8.x or higher
 - Git (for version control)
 
+## Windows Batch Scripts
+
+For Windows users, we've provided convenient batch scripts to simplify the deployment process:
+
+1. **install.bat**: Installs all dependencies
+2. **quick-deploy.bat**: Installs dependencies, builds, and starts the application
+3. **deploy.bat**: Full deployment script with menu options
+
+These scripts can be found in the root directory and can be executed by double-clicking them.
+
 ## Deployment Options
 
 ### 1. Vercel (Recommended)

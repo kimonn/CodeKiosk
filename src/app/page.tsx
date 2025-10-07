@@ -206,7 +206,7 @@ export default function DigitalSignage() {
       {/* Left Column */}
       <div className="d-flex flex-column p-2" style={{flex: '1', minHeight: '100vh', gap: '0.75rem'}}>
         {/* Main Content Area */}
-        <div className="content-card modern-shadow p-3 position-relative overflow-hidden" style={{height: 'calc(66.666vh - 1rem)', minHeight: 'calc(66.666vh - 1rem)', maxHeight: 'calc(66.666vh - 1rem)'}}>
+        <div className="content-card modern-shadow p-3 position-relative overflow-hidden" style={{height: 'calc(66.666vh - 1rem)', minHeight: 'calc(66.666vh - 1rem)', maxHeight: 'calc(66.666vh - 1rem)', border: '3px solid #fbbf24'}}>
           <MainContentDisplay 
             content={currentMainContent} 
             onVideoDurationChange={setVideoDuration}
@@ -239,7 +239,7 @@ export default function DigitalSignage() {
         </div>
 
         {/* News and Announcements */}
-        <div className="content-card modern-shadow p-3 overflow-hidden" style={{height: 'calc(33.333vh - 0.5rem)', minHeight: 'calc(33.333vh - 0.5rem)', maxHeight: 'calc(33.333vh - 0.5rem)'}}>
+        <div className="content-card modern-shadow p-3 overflow-hidden" style={{height: 'calc(33.333vh - 0.5rem)', minHeight: 'calc(33.333vh - 0.5rem)', maxHeight: 'calc(33.333vh - 0.5rem)', border: '3px solid #f97316'}}>
           <div className="d-flex align-items-center mb-4">
             <div className="me-3" style={{width: '4px', height: '2rem', background: 'linear-gradient(to bottom, #f97316, #ea580c)', borderRadius: '2px'}}></div>
             <h2 className="h3 fw-bold text-dark headline-text mb-0">
@@ -301,7 +301,7 @@ export default function DigitalSignage() {
       {/* Right Column */}
       <div className="d-flex flex-column p-2" style={{width: '33.333%', minWidth: '33.333%', maxWidth: '33.333%', height: '100vh', maxHeight: '100vh', gap: '0.75rem', overflow: 'hidden', boxSizing: 'border-box'}}>
         {/* Date and Time */}
-        <div className="blue-gradient rounded-4 modern-shadow p-3 text-white d-flex flex-column justify-content-center align-items-center position-relative overflow-hidden" style={{height: 'calc(25vh - 1rem)', minHeight: 'calc(25vh - 1rem)', maxHeight: 'calc(25vh - 1rem)'}}>
+        <div className="blue-gradient rounded-4 modern-shadow p-3 text-white d-flex flex-column justify-content-center align-items-center position-relative overflow-hidden" style={{height: 'calc(25vh - 1rem)', minHeight: 'calc(25vh - 1rem)', maxHeight: 'calc(25vh - 1rem)', border: '3px solid #10b981'}}>
           {/* Background decorative elements */}
           <div className="position-absolute" style={{top: 0, right: 0, width: '8rem', height: '8rem', backgroundColor: 'rgba(251, 146, 60, 0.2)', borderRadius: '50%', transform: 'translate(4rem, -4rem)'}}></div>
           <div className="position-absolute" style={{bottom: 0, left: 0, width: '6rem', height: '6rem', backgroundColor: 'rgba(251, 146, 60, 0.15)', borderRadius: '50%', transform: 'translate(-3rem, 3rem)'}}></div>
@@ -323,7 +323,7 @@ export default function DigitalSignage() {
         </div>
 
         {/* Reminders */}
-        <div className="content-card modern-shadow p-3 overflow-hidden" style={{height: 'calc(41.667vh - 1rem)', minHeight: 'calc(41.667vh - 1rem)', maxHeight: 'calc(41.667vh - 1rem)'}}>
+        <div className="content-card modern-shadow p-3 overflow-hidden" style={{height: 'calc(41.667vh - 1rem)', minHeight: 'calc(41.667vh - 1rem)', maxHeight: 'calc(41.667vh - 1rem)', border: '3px solid #3b82f6'}}>
           <div className="d-flex align-items-center mb-4">
             <div className="me-3" style={{width: '4px', height: '2rem', background: 'linear-gradient(to bottom, #10b981, #059669)', borderRadius: '2px'}}></div>
             <h2 className="h5 fw-bold text-dark headline-text mb-0">
@@ -385,7 +385,7 @@ export default function DigitalSignage() {
         </div>
 
         {/* Deadlines */}
-        <div className="content-card modern-shadow p-3 overflow-hidden" style={{height: 'calc(33.333vh - 1rem)', minHeight: 'calc(33.333vh - 1rem)', maxHeight: 'calc(33.333vh - 1rem)', background: 'linear-gradient(135deg, rgba(30, 107, 123, 0.1) 0%, rgba(19, 78, 74, 0.1) 100%)'}}>
+        <div className="content-card modern-shadow p-3 overflow-hidden" style={{height: 'calc(33.333vh - 1rem)', minHeight: 'calc(33.333vh - 1rem)', maxHeight: 'calc(33.333vh - 1rem)', background: 'linear-gradient(135deg, rgba(30, 107, 123, 0.1) 0%, rgba(19, 78, 74, 0.1) 100%)', border: '3px solid #ef4444'}}>
           <div className="d-flex align-items-center mb-4">
             <div className="me-3" style={{width: '4px', height: '2rem', background: 'linear-gradient(to bottom, #ef4444, #dc2626)', borderRadius: '2px'}}></div>
             <h2 className="h5 fw-bold text-dark headline-text mb-0">

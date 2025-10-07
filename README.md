@@ -42,6 +42,16 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 Open [http://localhost:3000/admin](http://localhost:3000/admin) to access the admin panel.
 
+## Windows Batch Scripts
+
+For Windows users, we've provided convenient batch scripts for easier installation and deployment:
+
+- **[install.bat](file:///e%3A/DigitalSignage/qDS/codekiosk/install.bat)**: Installs all dependencies
+- **[quick-deploy.bat](file:///e%3A/DigitalSignage/qDS/codekiosk/quick-deploy.bat)**: Installs dependencies, builds, and starts the application
+- **[deploy.bat](file:///e%3A/DigitalSignage/qDS/codekiosk/deploy.bat)**: Full deployment script with menu options
+
+Simply double-click any of these files to run them.
+
 ## Deployment
 
 To deploy this application:
