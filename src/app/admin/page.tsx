@@ -7,12 +7,96 @@ import {
   FileText, 
   Megaphone, 
   Bell, 
-  Calendar
+  Calendar,
+  Image as ImageIcon
 } from 'lucide-react';
 import { ContentData, MainContent, NewsItem, Reminder, Deadline } from '@/lib/database';
 import { MainContentTab, ItemsTab, EditModal, EditingItem } from './components';
 
-type TabType = 'main' | 'news' | 'reminders' | 'deadlines';
+// Create a simple logo settings component inline
+function LogoSettingsTab({ onFileUpload, uploading }: { 
+  onFileUpload: (file: File, type: 'image' | 'video') => Promise<string | null>;
+  uploading: boolean;
+}) {
+  return (
+    <div className="bg-white shadow rounded-3 p-4 h-100">
+      <h3 className="h5 fw-medium text-dark mb-4">Logo Settings</h3>
+      <div className="d-flex flex-column" style={{gap: '1rem'}}>
+        <div className="d-flex align-items-center" style={{gap: '1rem'}}>
+          <div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+
+                // Check if file is an image
+                if (!file.type.startsWith('image/')) {
+                  alert('Please select an image file');
+                  return;
+                }
+
+                try {
+                  const url = await onFileUpload(file, 'image');
+                  if (url) {
+                    // Save the logo path to the database
+                    const response = await fetch('/api/content', {
+                      method: 'PATCH',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ logoPath: url })
+                    });
+
+                    if (!response.ok) {
+                      alert('Failed to save logo');
+                    }
+                  }
+                } catch (error) {
+                  console.error('Error uploading logo:', error);
+                  alert('Upload failed');
+                }
+              }}
+              disabled={uploading}
+              className="form-control"
+              id="logo-upload"
+            />
+            {uploading && <div className="form-text text-primary mt-2">Uploading...</div>}
+          </div>
+        </div>
+        <div className="form-text text-muted">
+          Upload a logo to display in the date/time container. Recommended size: 100x100 pixels.
+        </div>
+        <div className="mt-4">
+          <button
+            onClick={async () => {
+              if (!confirm('Are you sure you want to remove the logo?')) return;
+
+              try {
+                const response = await fetch('/api/content', {
+                  method: 'PATCH',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ logoPath: '' })
+                });
+
+                if (!response.ok) {
+                  alert('Failed to remove logo');
+                }
+              } catch (error) {
+                console.error('Error removing logo:', error);
+                alert('Failed to remove logo');
+              }
+            }}
+            className="btn btn-outline-danger"
+          >
+            Remove Current Logo
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+type TabType = 'main' | 'news' | 'reminders' | 'deadlines' | 'logo';
 
 export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState<TabType>('main');
@@ -132,7 +216,7 @@ export default function AdminPanel() {
   }
 
   return (
-    <div className="min-vh-100 d-flex flex-column" style={{backgroundColor: '#f8f9fa'}}>
+    <div className="min-vh-100 d-flex flex-column" style={{backgroundColor: '#f8f9fa', overflow: 'auto', maxHeight: '100vh'}}>
       {/* Header */}
       <header className="bg-white shadow-sm border-bottom">
         <div className="container-fluid">
@@ -161,7 +245,8 @@ export default function AdminPanel() {
               { id: 'main', label: 'Main Content', icon: FileText },
               { id: 'news', label: 'News & Announcements', icon: Megaphone },
               { id: 'reminders', label: 'Reminders', icon: Bell },
-              { id: 'deadlines', label: 'Deadlines', icon: Calendar }
+              { id: 'deadlines', label: 'Deadlines', icon: Calendar },
+              { id: 'logo', label: 'Logo Settings', icon: ImageIcon }
             ].map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
@@ -182,10 +267,10 @@ export default function AdminPanel() {
       </nav>
 
       {/* Content */}
-      <main className="container-fluid py-4 flex-grow-1 d-flex flex-column" style={{minHeight: 0}}>
-        <div className="px-3 h-100 d-flex flex-column">
+      <main className="container-fluid py-4 flex-grow-1" style={{minHeight: 0}}>
+        <div className="px-3 h-100">
           {activeTab === 'main' && (
-            <div className="h-100 d-flex flex-column">
+            <div className="h-100" style={{overflow: 'hidden'}}>
               <MainContentTab
                 content={content?.mainContent || []}
                 onUpdate={updateMainContent}
@@ -200,69 +285,75 @@ export default function AdminPanel() {
           )}
 
           {activeTab === 'news' && (
-            <div className="h-100 d-flex flex-column">
+            <div className="h-100" style={{overflow: 'hidden'}}>
               <ItemsTab
-              title="News & Announcements"
-              items={content?.news || []}
-              type="news"
-              editing={editing}
-              setEditing={setEditing}
-              onSave={handleItemSave}
-              onDelete={handleItemDelete}
-              fields={[
-                { key: 'title', label: 'Title', type: 'text', required: true },
-                { key: 'content', label: 'Content', type: 'textarea', required: true }
-              ]}
-            />
-          </div>
+                title="News & Announcements"
+                items={content?.news || []}
+                type="news"
+                editing={editing}
+                setEditing={setEditing}
+                onSave={handleItemSave}
+                onDelete={handleItemDelete}
+                fields={[
+                  { key: 'title', label: 'Title', type: 'text', required: true },
+                  { key: 'content', label: 'Content', type: 'textarea', required: true }
+                ]}
+              />
+            </div>
           )}
 
           {activeTab === 'reminders' && (
-            <div className="h-100 d-flex flex-column">
+            <div className="h-100" style={{overflow: 'hidden'}}>
               <ItemsTab
-              title="Reminders"
-              items={content?.reminders || []}
-              type="reminders"
-              editing={editing}
-              setEditing={setEditing}
-              onSave={handleItemSave}
-              onDelete={handleItemDelete}
-              fields={[
-                { key: 'title', label: 'Title', type: 'text', required: true },
-                { key: 'content', label: 'Content', type: 'textarea', required: true },
-                { key: 'dueDate', label: 'Due Date', type: 'datetime-local', required: true }
-              ]}
-            />
-          </div>
+                title="Reminders"
+                items={content?.reminders || []}
+                type="reminders"
+                editing={editing}
+                setEditing={setEditing}
+                onSave={handleItemSave}
+                onDelete={handleItemDelete}
+                fields={[
+                  { key: 'title', label: 'Title', type: 'text', required: true },
+                  { key: 'content', label: 'Content', type: 'textarea', required: true },
+                  { key: 'dueDate', label: 'Due Date', type: 'datetime-local', required: true }
+                ]}
+              />
+            </div>
           )}
 
           {activeTab === 'deadlines' && (
-            <div className="h-100 d-flex flex-column">
+            <div className="h-100" style={{overflow: 'hidden'}}>
               <ItemsTab
-              title="Deadlines"
-              items={content?.deadlines || []}
-              type="deadlines"
-              editing={editing}
-              setEditing={setEditing}
-              onSave={handleItemSave}
-              onDelete={handleItemDelete}
-              fields={[
-                { key: 'title', label: 'Title', type: 'text', required: true },
-                { key: 'content', label: 'Content', type: 'textarea', required: true },
-                { key: 'dueDate', label: 'Due Date', type: 'datetime-local', required: true },
-                { 
-                  key: 'priority', 
-                  label: 'Priority', 
-                  type: 'select', 
-                  options: [
-                    { value: 'low', label: 'Low' },
-                    { value: 'medium', label: 'Medium' },
-                    { value: 'high', label: 'High' }
-                  ]
-                }
-              ]}
-            />
-          </div>
+                title="Deadlines"
+                items={content?.deadlines || []}
+                type="deadlines"
+                editing={editing}
+                setEditing={setEditing}
+                onSave={handleItemSave}
+                onDelete={handleItemDelete}
+                fields={[
+                  { key: 'title', label: 'Title', type: 'text', required: true },
+                  { key: 'content', label: 'Content', type: 'textarea', required: true },
+                  { key: 'dueDate', label: 'Due Date', type: 'datetime-local', required: true },
+                  { 
+                    key: 'priority', 
+                    label: 'Priority', 
+                    type: 'select', 
+                    options: [
+                      { value: 'low', label: 'Low' },
+                      { value: 'medium', label: 'Medium' },
+                      { value: 'high', label: 'High' }
+                    ]
+                  }
+                ]}
+              />
+            </div>
+          )}
+
+          {activeTab === 'logo' && (
+            <div className="h-100" style={{overflow: 'hidden'}}>
+              <LogoSettingsTab onFileUpload={handleFileUpload} uploading={uploading} />
+            </div>
           )}
         </div>
       </main>

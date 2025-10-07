@@ -47,7 +47,7 @@ export default function DigitalSignage() {
     return () => clearInterval(timer);
   }, []);
 
-  // Fetch content data
+  // Fetch content data (including logo)
   useEffect(() => {
     const fetchContent = async () => {
       try {
@@ -73,7 +73,7 @@ export default function DigitalSignage() {
   // Reset video state when content changes
   useEffect(() => {
     if (content?.mainContent) {
-      const activeMainContent = content.mainContent.filter(item => item.active);
+      const activeMainContent = content.mainContent.filter(item => item.active).sort((a, b) => a.order - b.order);
       const currentItem = activeMainContent[currentContentIndex];
       
       if (currentItem?.type !== 'video') {
@@ -129,7 +129,7 @@ export default function DigitalSignage() {
   useEffect(() => {
     if (!content?.mainContent || content.mainContent.length <= 1) return;
 
-    const activeMainContent = content.mainContent.filter(item => item.active);
+    const activeMainContent = content.mainContent.filter(item => item.active).sort((a, b) => a.order - b.order);
     if (activeMainContent.length <= 1) return;
 
     const currentItem = activeMainContent[currentContentIndex];
@@ -179,7 +179,7 @@ export default function DigitalSignage() {
   ) || [];
 
   // Get current main content item
-  const activeMainContent = content?.mainContent?.filter(item => item.active) || [];
+  const activeMainContent = content?.mainContent?.filter(item => item.active).sort((a, b) => a.order - b.order) || [];
   const currentMainContent = activeMainContent[currentContentIndex] || activeMainContent[0];
 
   // Get current news item
@@ -301,12 +301,26 @@ export default function DigitalSignage() {
       {/* Right Column */}
       <div className="d-flex flex-column p-2" style={{width: '33.333%', minWidth: '33.333%', maxWidth: '33.333%', height: '100vh', maxHeight: '100vh', gap: '0.75rem', overflow: 'hidden', boxSizing: 'border-box'}}>
         {/* Date and Time */}
-        <div className="blue-gradient rounded-4 modern-shadow p-3 text-white d-flex flex-column justify-content-center align-items-center position-relative overflow-hidden" style={{height: 'calc(25vh - 1rem)', minHeight: 'calc(25vh - 1rem)', maxHeight: 'calc(25vh - 1rem)', border: '3px solid #10b981'}}>
+        <div className="blue-gradient rounded-4 modern-shadow p-3 text-white d-flex position-relative overflow-hidden" style={{height: 'calc(25vh - 1rem)', minHeight: 'calc(25vh - 1rem)', maxHeight: 'calc(25vh - 1rem)', border: '3px solid #10b981'}}>
           {/* Background decorative elements */}
           <div className="position-absolute" style={{top: 0, right: 0, width: '8rem', height: '8rem', backgroundColor: 'rgba(251, 146, 60, 0.2)', borderRadius: '50%', transform: 'translate(4rem, -4rem)'}}></div>
           <div className="position-absolute" style={{bottom: 0, left: 0, width: '6rem', height: '6rem', backgroundColor: 'rgba(251, 146, 60, 0.15)', borderRadius: '50%', transform: 'translate(-3rem, 3rem)'}}></div>
           
-          <div className="text-center position-relative" style={{zIndex: 10}}>
+          {/* Logo on the left side */}
+          {content?.logoPath && (
+            <div className="d-flex align-items-center justify-content-start ps-2" style={{width: '40%', minWidth: '120px'}}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src={content.logoPath} 
+                alt="Logo" 
+                className="img-fluid"
+                style={{maxHeight: '100px', maxWidth: '100%', objectFit: 'contain'}}
+              />
+            </div>
+          )}
+          
+          {/* Date/Time Content - moved closer to logo */}
+          <div className="d-flex flex-column justify-content-center align-items-start flex-grow-1 position-relative ps-3" style={{zIndex: 10}}>
             <div className="headline-text mb-2" style={{fontSize: '2.5rem', fontWeight: 'bold', letterSpacing: '-0.025em'}}>
               {format(currentTime, 'HH:mm')}
             </div>

@@ -46,6 +46,7 @@ export interface ContentData {
   news: NewsItem[];
   reminders: Reminder[];
   deadlines: Deadline[];
+  logoPath?: string; // Add logo path to store the uploaded logo
 }
 
 // Ensure data directory exists
@@ -69,7 +70,8 @@ if (!fs.existsSync(CONTENT_FILE)) {
     }],
     news: [],
     reminders: [],
-    deadlines: []
+    deadlines: [],
+    logoPath: '' // Initialize with empty logo path
   };
   fs.writeFileSync(CONTENT_FILE, JSON.stringify(initialData, null, 2));
 }
@@ -240,4 +242,17 @@ export const reorderMainContent = (itemIds: string[]): void => {
   }));
   
   writeContentData(data);
+};
+
+// Add function to update logo path
+export const updateLogoPath = (logoPath: string): void => {
+  const data = readContentData();
+  data.logoPath = logoPath;
+  writeContentData(data);
+};
+
+// Add function to get logo path
+export const getLogoPath = (): string | undefined => {
+  const data = readContentData();
+  return data.logoPath;
 };

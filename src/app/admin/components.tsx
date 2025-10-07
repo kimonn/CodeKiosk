@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Upload, Edit3, Trash2, Plus, Save, X, ArrowUp, ArrowDown } from 'lucide-react';
 import { MainContent, NewsItem, Reminder, Deadline } from '@/lib/database';
 
@@ -72,28 +72,25 @@ export function MainContentTab({
           [sortedContent[currentIndex + 1], sortedContent[currentIndex]];
       }
       
-      // Extract the ordered IDs
-      const itemIds = sortedContent.map(item => item.id);
+      // Reassign order values to ensure they are sequential and conflict-free
+      const updatedContent = sortedContent.map((item, index) => ({
+        ...item,
+        order: index + 1
+      }));
       
-      // Send the new order to the API
-      const response = await fetch('/api/reorder', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ itemIds })
-      });
-      
-      if (response.ok) {
-        // Reload the page to reflect changes
-        window.location.reload();
-      } else {
-        console.error('Failed to reorder items');
+      // Update each item with its new order
+      for (const item of updatedContent) {
+        await onSave('main', item);
       }
+      
+      // Reload the content to reflect changes
+      window.location.reload();
     } catch (error) {
       console.error('Error reordering content:', error);
     }
   };  
   return (
-    <div className="d-flex flex-column h-100" style={{gap: '1.5rem'}}>
+    <div className="d-flex flex-column h-100">
       <div className="d-flex justify-content-between align-items-center flex-shrink-0">
         <div>
           <h2 className="h5 fw-medium text-dark mb-0">Main Content Items</h2>
@@ -107,111 +104,179 @@ export function MainContentTab({
         </button>
       </div>
 
-      <div className="bg-white shadow rounded-3 flex-grow-1 d-flex flex-column" style={{minHeight: 0}}>
+      <div className="bg-white shadow rounded-3 flex-grow-1 d-flex flex-column mt-2">
         {!content || content.length === 0 ? (
           <div className="p-4 text-center text-muted">
             No main content items yet. Click &quot;Add New Content&quot; to create your first item.
           </div>
         ) : (
-          <div className="overflow-auto custom-scrollbar" style={{maxHeight: 'calc(100vh - 200px)'}}>
+          <div className="overflow-hidden flex-grow-1">
             {(() => {
               const sortedContent = [...content].sort((a, b) => a.order - b.order);
-              return sortedContent.map((item, index) => {
-                const isFirst = index === 0;
-                const isLast = index === sortedContent.length - 1;
-                
-                return (
-                  <div 
-                    key={item.id} 
-                    className={`p-4 position-relative ${!isLast ? 'border-bottom' : ''}`}
-                  >
-                    {/* Content */}
-                    <div className="d-flex justify-content-between align-items-start">
-                      <div className="flex-grow-1">
-                        <div className="d-flex align-items-center mb-2" style={{gap: '0.5rem'}}>
-                          <span className="badge" style={{
-                            backgroundColor: item.type === 'text' ? '#6c757d' : 
-                                            item.type === 'image' ? '#28a745' : '#dc3545'
-                          }}>
-                            {item.type}
-                          </span>
-                          <span className={`badge ${
-                            item.active ? 'bg-success' : 'bg-secondary'
-                          }`}>
-                            {item.active ? 'Active' : 'Inactive'}
-                          </span>
-                          <span className="badge bg-info">
-                            Order: {index + 1}
-                          </span>
-                          <span className="badge bg-warning text-dark">
-                            Duration: {item.duration || 10}s
-                          </span>
-                        </div>
-                        <h3 className="h6 fw-medium text-dark">{item.title}</h3>
-                        {item.content && (
-                          <p className="text-muted mb-2">{item.content}</p>
-                        )}
-                        {item.mediaPath && (
-                          <div className="mt-2">
-                            {item.type === 'image' ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img 
-                                src={item.mediaPath} 
-                                alt={item.title}
-                                className="img-fluid rounded border"
-                                style={{maxWidth: '200px', maxHeight: '120px', objectFit: 'contain'}}
-                              />
-                            ) : item.type === 'video' ? (
-                              <video 
-                                src={item.mediaPath}
-                                controls
-                                className="rounded border"
-                                style={{maxWidth: '200px', maxHeight: '120px'}}
-                              >
-                                Your browser does not support the video tag.
-                              </video>
-                            ) : null}
-                          </div>
-                        )}
-                      </div>
-                      <div className="d-flex flex-column" style={{gap: '0.5rem'}}>
-                        <div className="d-flex" style={{gap: '0.5rem'}}>
-                          <button
-                            onClick={() => handleEdit(item)}
-                            className="btn btn-outline-primary btn-sm p-2"
-                          >
-                            <Edit3 size={16} />
-                          </button>
-                          <button
-                            onClick={() => onDelete('main-content', item.id)}
-                            className="btn btn-outline-danger btn-sm p-2"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                        <div className="d-flex" style={{gap: '0.25rem'}}>
-                          <button
-                            onClick={() => handleReorder(item.id, 'up')}
-                            disabled={isFirst}
-                            className="btn btn-outline-secondary btn-sm p-2"
-                            title="Move Up"
-                          >
-                            <ArrowUp size={16} />
-                          </button>
-                          <button
-                            onClick={() => handleReorder(item.id, 'down')}
-                            disabled={isLast}
-                            className="btn btn-outline-secondary btn-sm p-2"
-                            title="Move Down"
-                          >
-                            <ArrowDown size={16} />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+              const textItems = sortedContent.filter(item => item.type === 'text');
+              const imageItems = sortedContent.filter(item => item.type === 'image');
+              const videoItems = sortedContent.filter(item => item.type === 'video');
+              
+              // Function to render items for a specific type
+              const renderItems = (items: MainContent[], title: string, bgColor: string, headerColor: string) => (
+                <div className="flex-grow-1 p-3 d-flex flex-column" style={{minWidth: '300px'}}>
+                  <div className="mb-3" style={{backgroundColor: headerColor, padding: '0.75rem', borderRadius: '0.5rem'}}>
+                    <h3 className="h6 fw-medium text-dark mb-0">{title}</h3>
+                    <div className="small text-muted">{items.length} items</div>
                   </div>
-                );
-              });
+                  <div className="overflow-auto custom-scrollbar flex-grow-1" style={{scrollBehavior: 'smooth'}}>
+                    {items.length === 0 ? (
+                      <div className="text-muted p-4 text-center rounded" style={{backgroundColor: 'rgba(0,0,0,0.02)'}}>
+                        No {title.toLowerCase()} items
+                      </div>
+                    ) : (
+                      items.map((item: MainContent, index: number) => {
+                        const isFirst = index === 0;
+                        const isLast = index === items.length - 1;
+                        
+                        // Calculate global order position
+                        const globalIndex = sortedContent.findIndex(contentItem => contentItem.id === item.id) + 1;
+                        const totalItems = sortedContent.length;
+                        const displayPosition = `${globalIndex} of ${totalItems}`;
+                        
+                        return (
+                          <div 
+                            key={item.id} 
+                            className={`p-4 position-relative ${!isLast ? 'border-bottom' : ''}`}
+                            style={{backgroundColor: bgColor, transition: 'box-shadow 0.2s ease'}}
+                            onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'}
+                            onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
+                          >
+                            <div className="d-flex justify-content-between align-items-start">
+                              <div className="flex-grow-1">
+                                <div className="d-flex align-items-center mb-2" style={{gap: '0.5rem'}}>
+                                  <span className="badge d-flex align-items-center justify-content-center" style={{
+                                    backgroundColor: item.type === 'text' ? '#6c757d' : 
+                                                    item.type === 'image' ? '#28a745' : '#dc3545',
+                                    height: '24px',
+                                    minWidth: '60px'
+                                  }}>
+                                    {item.type}
+                                  </span>
+                                  <button
+                                    onClick={async () => {
+                                      const updatedItem = {...item, active: !item.active};
+                                      await onSave('main', updatedItem);
+                                      // Refresh the page to reflect changes
+                                      window.location.reload();
+                                    }}
+                                    className={`btn btn-sm d-flex align-items-center justify-content-center ${item.active ? 'btn-success' : 'btn-secondary'}`}
+                                    title={item.active ? 'Click to deactivate' : 'Click to activate'}
+                                    style={{height: '24px', minWidth: '70px', padding: '0.25rem 0.5rem', fontSize: '0.75rem'}}
+                                  >
+                                    {item.active ? 'Active' : 'Inactive'}
+                                  </button>
+                                  <span className="badge bg-info d-flex align-items-center justify-content-center" style={{height: '24px', minWidth: '70px'}}>
+                                    Order: {item.order}
+                                  </span>
+                                  <span className="badge bg-warning text-dark d-flex align-items-center justify-content-center" style={{height: '24px', minWidth: '90px'}}>
+                                    Duration: {item.duration || 10}s
+                                  </span>
+                                </div>
+                                <h4 className="h6 fw-medium text-dark">{item.title}</h4>
+                                {item.content && (
+                                  <p className="text-muted mb-2">{item.content}</p>
+                                )}
+                                {item.mediaPath && (
+                                  <div className="mt-2">
+                                    {item.type === 'image' ? (
+                                      // eslint-disable-next-line @next/next/no-img-element
+                                      <img 
+                                        src={item.mediaPath} 
+                                        alt={item.title}
+                                        className="img-fluid rounded border"
+                                        style={{maxWidth: '200px', maxHeight: '120px', objectFit: 'contain'}}
+                                      />
+                                    ) : item.type === 'video' ? (
+                                      <video 
+                                        src={item.mediaPath}
+                                        controls
+                                        className="rounded border"
+                                        style={{maxWidth: '200px', maxHeight: '120px'}}
+                                      >
+                                        Your browser does not support the video tag.
+                                      </video>
+                                    ) : null}
+                                  </div>
+                                )}
+                                <div className="mt-2 d-flex align-items-center" style={{gap: '0.5rem'}}>
+                                  <span className="badge bg-primary">Display Position: {displayPosition}</span>
+                                  <button
+                                    onClick={() => {
+                                      const newOrder = prompt(`Enter new order value for "${item.title}" (1-${totalItems}):`, item.order.toString());
+                                      if (newOrder !== null) {
+                                        const orderValue = parseInt(newOrder, 10);
+                                        if (!isNaN(orderValue) && orderValue >= 1 && orderValue <= totalItems) {
+                                          onSave('main', {...item, order: orderValue});
+                                        } else {
+                                          alert(`Please enter a valid order value between 1 and ${totalItems}`);
+                                        }
+                                      }
+                                    }}
+                                    className="btn btn-outline-primary btn-sm"
+                                    title="Change Order"
+                                  >
+                                    Change Order
+                                  </button>
+                                </div>
+                              </div>
+                              <div className="d-flex flex-column" style={{gap: '0.5rem'}}>
+                                <div className="d-flex" style={{gap: '0.5rem'}}>
+                                  <button
+                                    onClick={() => handleEdit(item)}
+                                    className="btn btn-outline-primary btn-sm p-2"
+                                    title="Edit"
+                                  >
+                                    <Edit3 size={16} />
+                                  </button>
+                                  <button
+                                    onClick={() => onDelete('main-content', item.id)}
+                                    className="btn btn-outline-danger btn-sm p-2"
+                                    title="Delete"
+                                  >
+                                    <Trash2 size={16} />
+                                  </button>
+                                </div>
+                                <div className="d-flex" style={{gap: '0.25rem'}}>
+                                  <button
+                                    onClick={() => handleReorder(item.id, 'up')}
+                                    disabled={isFirst}
+                                    className="btn btn-outline-secondary btn-sm p-2"
+                                    title="Move Up"
+                                  >
+                                    <ArrowUp size={16} />
+                                  </button>
+                                  <button
+                                    onClick={() => handleReorder(item.id, 'down')}
+                                    disabled={isLast}
+                                    className="btn btn-outline-secondary btn-sm p-2"
+                                    title="Move Down"
+                                  >
+                                    <ArrowDown size={16} />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              );
+              
+              return (
+                <div className="d-flex" style={{minHeight: '100%', gap: '1rem'}}>
+                  {renderItems(textItems, 'Text Items', 'rgba(108, 117, 125, 0.05)', 'rgba(108, 117, 125, 0.1)')}
+                  {renderItems(imageItems, 'Image Items', 'rgba(40, 167, 69, 0.05)', 'rgba(40, 167, 69, 0.1)')}
+                  {renderItems(videoItems, 'Video Items', 'rgba(220, 53, 69, 0.05)', 'rgba(220, 53, 69, 0.1)')}
+                </div>
+              );
             })()}
           </div>
         )}
@@ -280,7 +345,7 @@ export function ItemsTab({
   };
 
   return (
-    <div className="d-flex flex-column h-100" style={{gap: '1.5rem'}}>
+    <div className="d-flex flex-column h-100">
       <div className="d-flex justify-content-between align-items-center flex-shrink-0">
         <h2 className="h5 fw-medium text-dark mb-0">{title}</h2>
         <button
@@ -292,30 +357,38 @@ export function ItemsTab({
         </button>
       </div>
 
-      <div className="bg-white shadow rounded-3 flex-grow-1 d-flex flex-column" style={{minHeight: 0}}>
+      <div className="bg-white shadow rounded-3 flex-grow-1 d-flex flex-column mt-2">
         {items.length === 0 ? (
           <div className="p-4 text-center text-muted">
             No items yet. Click &quot;Add New&quot; to create your first item.
           </div>
         ) : (
-          <div className="overflow-auto custom-scrollbar" style={{maxHeight: 'calc(100vh - 200px)'}}>
+          <div className="overflow-auto custom-scrollbar flex-grow-1">
             {items.map((item, index) => (
               <div key={'id' in item ? item.id : index} className={`p-4 ${index !== items.length - 1 ? 'border-bottom' : ''}`}>
                 <div className="d-flex justify-content-between align-items-start">
                   <div className="flex-grow-1">
                     <div className="d-flex align-items-center mb-2" style={{gap: '0.5rem'}}>
                       <h3 className="h6 fw-medium text-dark mb-0">{item.title}</h3>
-                      <span className={`badge ${
-                        'active' in item && item.active ? 'bg-success' : 'bg-secondary'
-                      }`}>
-                        {'active' in item && item.active ? 'Active' : 'Inactive'}
-                      </span>
+                      <button
+                        onClick={async () => {
+                          const updatedItem = {...item, active: !item.active};
+                          await onSave(type, updatedItem);
+                          // Refresh the page to reflect changes
+                          window.location.reload();
+                        }}
+                        className={`btn btn-sm d-flex align-items-center justify-content-center ${item.active ? 'btn-success' : 'btn-secondary'}`}
+                        title={item.active ? 'Click to deactivate' : 'Click to activate'}
+                        style={{height: '24px', minWidth: '70px', padding: '0.25rem 0.5rem', fontSize: '0.75rem'}}
+                      >
+                        {item.active ? 'Active' : 'Inactive'}
+                      </button>
                       {'priority' in item && item.priority && (
-                        <span className={`badge ${
+                        <span className={`badge d-flex align-items-center justify-content-center ${
                           item.priority === 'high' ? 'bg-danger' :
                           item.priority === 'medium' ? 'bg-warning' :
                           'bg-info'
-                        }`}>
+                        }`} style={{height: '24px', minWidth: '80px'}}>
                           {item.priority} priority
                         </span>
                       )}
@@ -546,15 +619,16 @@ export function EditModal({ editing, setEditing, onSave, onFileUpload, uploading
                   )}
                   
                   {field.type === 'checkbox' && (
-                    <div className="form-check">
+                    <div className="form-check form-switch">
                       <input
                         type="checkbox"
                         checked={formData[field.key] ?? true}
                         onChange={(e) => setFormData({ ...formData, [field.key]: e.target.checked })}
                         className="form-check-input"
                         id={field.key}
+                        style={{cursor: 'pointer'}}
                       />
-                      <label className="form-check-label" htmlFor={field.key}>
+                      <label className="form-check-label" htmlFor={field.key} style={{cursor: 'pointer'}}>
                         {field.key === 'active' ? 'Show on display' : field.label}
                       </label>
                     </div>
@@ -620,6 +694,140 @@ export function EditModal({ editing, setEditing, onSave, onFileUpload, uploading
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// Add new component for logo upload
+function LogoUploadSection({ onFileUpload, uploading }: { 
+  onFileUpload: (file: File, type: 'image' | 'video') => Promise<string | null>;
+  uploading: boolean;
+}) {
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Load current logo on component mount
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await fetch('/api/content');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.logoPath) {
+            setLogoPreview(data.logoPath);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching logo:', error);
+      }
+    };
+
+    fetchLogo();
+  }, []);
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check if file is an image
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const url = await onFileUpload(file, 'image');
+      if (url) {
+        // Save the logo path to the database
+        const response = await fetch('/api/content', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ logoPath: url })
+        });
+
+        if (response.ok) {
+          setLogoPreview(url);
+        } else {
+          alert('Failed to save logo');
+        }
+      }
+    } catch (error) {
+      console.error('Error uploading logo:', error);
+      alert('Upload failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRemoveLogo = async () => {
+    if (!confirm('Are you sure you want to remove the logo?')) return;
+
+    try {
+      const response = await fetch('/api/content', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ logoPath: '' })
+      });
+
+      if (response.ok) {
+        setLogoPreview(null);
+      } else {
+        alert('Failed to remove logo');
+      }
+    } catch (error) {
+      console.error('Error removing logo:', error);
+      alert('Failed to remove logo');
+    }
+  };
+
+  return (
+    <div className="d-flex flex-column" style={{gap: '1rem'}}>
+      <div className="d-flex align-items-center" style={{gap: '1rem'}}>
+        <div>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleLogoUpload}
+            disabled={uploading || loading}
+            className="form-control"
+            id="logo-upload"
+          />
+          {(uploading || loading) && <div className="form-text text-primary mt-2">Uploading...</div>}
+        </div>
+        {(logoPreview || loading) && (
+          <div className="d-flex align-items-center" style={{gap: '0.5rem'}}>
+            <div 
+              className="border rounded d-flex align-items-center justify-content-center" 
+              style={{width: '60px', height: '60px', overflow: 'hidden'}}
+            >
+              {loading ? (
+                <div className="spinner-border spinner-border-sm" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img 
+                  src={logoPreview || ''} 
+                  alt="Logo preview" 
+                  className="img-fluid"
+                  style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'contain'}}
+                />
+              )}
+            </div>
+            <button
+              onClick={handleRemoveLogo}
+              className="btn btn-outline-danger btn-sm"
+              disabled={loading}
+            >
+              Remove
+            </button>
+          </div>
+        )}
+      </div>
+      <div className="form-text text-muted">
+        Upload a logo to display in the date/time container. Recommended size: 100x100 pixels.
       </div>
     </div>
   );
