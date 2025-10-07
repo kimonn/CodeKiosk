@@ -105,11 +105,11 @@ body {
 }
 
 .slide-up {
-  animation: slideUp 0.3s ease-out;
+  animation: slideUp 0.5s ease-out;
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -190,7 +190,7 @@ body {
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateX(-30px);
   }
   to {
     opacity: 1;
@@ -201,7 +201,7 @@ body {
 @keyframes slide-up {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -209,8 +209,74 @@ body {
   }
 }
 
+/* LED border animation keyframes */
+@keyframes ledLight {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
 .slide-up {
-  animation: slide-up 0.5s ease-out;
+  animation: slide-up 0.6s ease-out;
+}
+
+/* LED border animation classes with rainbow colors */
+.led-border-orange {
+  position: relative;
+  border-radius: 16px;
+  box-shadow: 0 0 0 2px #ff6666; /* Lighter red as starting color */
+  animation: ledLightRainbow 6s linear infinite;
+}
+
+.led-border-teal {
+  position: relative;
+  border-radius: 16px;
+  box-shadow: 0 0 0 2px #ff6666; /* Lighter red as starting color */
+  animation: ledLightRainbow 6s linear infinite;
+}
+
+.led-border-blue {
+  position: relative;
+  border-radius: 16px;
+  box-shadow: 0 0 0 2px #ff6666; /* Lighter red as starting color */
+  animation: ledLightRainbow 6s linear infinite;
+}
+
+.led-border-red {
+  position: relative;
+  border-radius: 16px;
+  box-shadow: 0 0 0 2px #ff6666; /* Lighter red as starting color */
+  animation: ledLightRainbow 6s linear infinite;
+}
+
+@keyframes ledLightRainbow {
+  0% {
+    box-shadow: 0 0 0 2px #ff6666; /* Lighter red */
+  }
+  14% {
+    box-shadow: 0 0 0 2px #ff9966; /* Lighter orange */
+  }
+  28% {
+    box-shadow: 0 0 0 2px #ffff99; /* Lighter yellow */
+  }
+  42% {
+    box-shadow: 0 0 0 2px #99ff99; /* Lighter green */
+  }
+  57% {
+    box-shadow: 0 0 0 2px #99ffff; /* Lighter cyan */
+  }
+  71% {
+    box-shadow: 0 0 0 2px #9999ff; /* Lighter blue */
+  }
+  85% {
+    box-shadow: 0 0 0 2px #cc99ff; /* Lighter purple */
+  }
+  100% {
+    box-shadow: 0 0 0 2px #ff6666; /* Lighter red */
+  }
 }
 
 /* Fixed layout for digital signage */

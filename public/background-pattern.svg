@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+  <!-- Light gradient background -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0f9ff">
+        <animate attributeName="stop-color" values="#f0f9ff;#fdf2f8;#f0fdf4;#f0f9ff" dur="20s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="50%" stop-color="#fdf2f8">
+        <animate attributeName="stop-color" values="#fdf2f8;#f0fdf4;#f0f9ff;#fdf2f8" dur="20s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="100%" stop-color="#f0fdf4">
+        <animate attributeName="stop-color" values="#f0fdf4;#f0f9ff;#fdf2f8;#f0fdf4" dur="20s" repeatCount="indefinite" />
+      </stop>
+    </linearGradient>
+    
+    <!-- Subtle pattern elements -->
+    <circle id="dot" r="2" fill="#c7d2fe" opacity="0.3">
+      <animate attributeName="fill" values="#c7d2fe;#ddd6fe;#d9f99d;#c7d2fe" dur="15s" repeatCount="indefinite" />
+    </circle>
+    <rect id="smallRect" width="4" height="4" fill="#dbeafe" opacity="0.2" rx="1">
+      <animate attributeName="fill" values="#dbeafe;#e0e7ff;#dcfce7;#dbeafe" dur="15s" repeatCount="indefinite" />
+    </rect>
+    
+    <!-- Moving circle for dynamic effect -->
+    <circle id="movingDot" r="3" fill="#a5b4fc" opacity="0.4" />
+    
+    <!-- Moving 0 and 1 elements -->
+    <text id="zero" font-family="monospace" font-size="20" fill="#94a3b8" opacity="0.3">0</text>
+    <text id="one" font-family="monospace" font-size="20" fill="#94a3b8" opacity="0.3">1</text>
+    
+    <!-- Kimonn Chong text -->
+    <text id="kimonn" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#475569" opacity="0.4">Kimonn Chong</text>
+  </defs>
+  
+  <!-- Background gradient -->
+  <rect width="100%" height="100%" fill="url(#bgGradient)" />
+  
+  <!-- Animated pattern elements -->
+  <use href="#dot" x="50" y="50" />
+  <use href="#dot" x="150" y="120" />
+  <use href="#dot" x="300" y="80" />
+  <use href="#dot" x="500" y="200" />
+  <use href="#dot" x="700" y="150" />
+  <use href="#dot" x="100" y="300" />
+  <use href="#dot" x="400" y="350" />
+  <use href="#dot" x="650" y="400" />
+  <use href="#dot" x="250" y="500" />
+  <use href="#dot" x="550" y="550" />
+  
+  <use href="#smallRect" x="100" y="100" />
+  <use href="#smallRect" x="250" y="180" />
+  <use href="#smallRect" x="450" y="120" />
+  <use href="#smallRect" x="600" y="250" />
+  <use href="#smallRect" x="200" y="400" />
+  <use href="#smallRect" x="500" y="450" />
+  
+  <!-- Moving elements -->
+  <use href="#movingDot">
+    <animateTransform attributeName="transform" type="translate" values="0,0; 800,600; 0,0" dur="30s" repeatCount="indefinite" />
+  </use>
+  <use href="#movingDot">
+    <animateTransform attributeName="transform" type="translate" values="800,0; 0,600; 800,0" dur="25s" repeatCount="indefinite" />
+  </use>
+  
+  <!-- Moving 0 and 1 elements -->
+  <use href="#zero">
+    <animateTransform attributeName="transform" type="translate" values="0,100; 800,200; 0,100" dur="20s" repeatCount="indefinite" />
+  </use>
+  <use href="#one">
+    <animateTransform attributeName="transform" type="translate" values="800,300; 0,400; 800,300" dur="18s" repeatCount="indefinite" />
+  </use>
+  <use href="#zero">
+    <animateTransform attributeName="transform" type="translate" values="200,0; 600,600; 200,0" dur="25s" repeatCount="indefinite" />
+  </use>
+  <use href="#one">
+    <animateTransform attributeName="transform" type="translate" values="600,0; 200,600; 600,0" dur="22s" repeatCount="indefinite" />
+  </use>
+  
+  <!-- Moving Kimonn Chong text with random-like movement -->
+  <use href="#kimonn">
+    <animateTransform attributeName="transform" type="translate" values="100,100; 500,200; 200,400; 600,100; 100,100" dur="35s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0.4; 0.2; 0.5; 0.3; 0.4" dur="35s" repeatCount="indefinite" />
+  </use>
+  <use href="#kimonn">
+    <animateTransform attributeName="transform" type="translate" values="700,300; 300,500; 400,100; 100,500; 700,300" dur="40s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0.3; 0.5; 0.2; 0.4; 0.3" dur="40s" repeatCount="indefinite" />
+  </use>
+</svg>

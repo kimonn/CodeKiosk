@@ -192,7 +192,7 @@ export default function DigitalSignage() {
   const currentDeadlineItem = activeDeadlines[currentDeadlineIndex] || activeDeadlines[0];
 
   return (
-    <div className="h-100vh d-flex position-relative" style={{background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 25%, #bfdbfe 50%, #93c5fd 75%, #e0f2fe 100%)', height: '100vh', overflow: 'hidden'}}>
+    <div className="h-100vh d-flex position-relative" style={{background: 'url(/background-pattern.svg) center/cover no-repeat, linear-gradient(135deg, #f0f9ff 0%, #fdf2f8 50%, #f0fdf4 100%)', height: '100vh', overflow: 'hidden'}}>
       {/* Admin Button */}
       <Link 
         href="/admin" 
@@ -206,7 +206,7 @@ export default function DigitalSignage() {
       {/* Left Column */}
       <div className="d-flex flex-column p-2" style={{flex: '1', minHeight: '100vh', gap: '0.75rem'}}>
         {/* Main Content Area */}
-        <div className="content-card modern-shadow p-3 position-relative overflow-hidden" style={{height: 'calc(66.666vh - 1rem)', minHeight: 'calc(66.666vh - 1rem)', maxHeight: 'calc(66.666vh - 1rem)', border: '3px solid #fbbf24'}}>
+        <div className="content-card modern-shadow p-3 position-relative overflow-hidden led-border-orange" style={{height: 'calc(66.666vh - 1rem)', minHeight: 'calc(66.666vh - 1rem)', maxHeight: 'calc(66.666vh - 1rem)', background: 'linear-gradient(135deg, #fff9ef 0%, #fff4e6 100%)'}}>
           <MainContentDisplay 
             content={currentMainContent} 
             onVideoDurationChange={setVideoDuration}
@@ -239,7 +239,7 @@ export default function DigitalSignage() {
         </div>
 
         {/* News and Announcements */}
-        <div className="content-card modern-shadow p-3 overflow-hidden" style={{height: 'calc(33.333vh - 0.5rem)', minHeight: 'calc(33.333vh - 0.5rem)', maxHeight: 'calc(33.333vh - 0.5rem)', border: '3px solid #f97316'}}>
+        <div className="content-card modern-shadow p-3 overflow-hidden led-border-orange" style={{height: 'calc(33.333vh - 0.5rem)', minHeight: 'calc(33.333vh - 0.5rem)', maxHeight: 'calc(33.333vh - 0.5rem)', background: 'linear-gradient(135deg, #fff9ef 0%, #fff4e6 100%)'}}>
           <div className="d-flex align-items-center mb-4">
             <div className="me-3" style={{width: '4px', height: '2rem', background: 'linear-gradient(to bottom, #f97316, #ea580c)', borderRadius: '2px'}}></div>
             <h2 className="h3 fw-bold text-dark headline-text mb-0">
@@ -259,7 +259,7 @@ export default function DigitalSignage() {
                      padding: '1.5rem',
                      borderRadius: '12px',
                      borderLeft: '4px solid #1e3a8a',
-                     animation: 'slideIn 0.5s ease-in-out'
+                     animation: 'slideIn 0.6s ease-out'
                    }}>
                 <h3 className="fw-bold text-dark h4 headline-text mb-3">{currentNewsItem.title}</h3>
                 <p className="text-muted body-text mb-3 lh-lg">{currentNewsItem.content}</p>
@@ -301,7 +301,7 @@ export default function DigitalSignage() {
       {/* Right Column */}
       <div className="d-flex flex-column p-2" style={{width: '33.333%', minWidth: '33.333%', maxWidth: '33.333%', height: '100vh', maxHeight: '100vh', gap: '0.75rem', overflow: 'hidden', boxSizing: 'border-box'}}>
         {/* Date and Time */}
-        <div className="blue-gradient rounded-4 modern-shadow p-3 text-white d-flex position-relative overflow-hidden" style={{height: 'calc(25vh - 1rem)', minHeight: 'calc(25vh - 1rem)', maxHeight: 'calc(25vh - 1rem)', border: '3px solid #10b981'}}>
+        <div className="blue-gradient rounded-4 modern-shadow p-3 text-white d-flex position-relative overflow-hidden led-border-teal" style={{height: 'calc(25vh - 1rem)', minHeight: 'calc(25vh - 1rem)', maxHeight: 'calc(25vh - 1rem)'}}>
           {/* Background decorative elements */}
           <div className="position-absolute" style={{top: 0, right: 0, width: '8rem', height: '8rem', backgroundColor: 'rgba(251, 146, 60, 0.2)', borderRadius: '50%', transform: 'translate(4rem, -4rem)'}}></div>
           <div className="position-absolute" style={{bottom: 0, left: 0, width: '6rem', height: '6rem', backgroundColor: 'rgba(251, 146, 60, 0.15)', borderRadius: '50%', transform: 'translate(-3rem, 3rem)'}}></div>
@@ -337,7 +337,7 @@ export default function DigitalSignage() {
         </div>
 
         {/* Reminders */}
-        <div className="content-card modern-shadow p-3 overflow-hidden" style={{height: 'calc(41.667vh - 1rem)', minHeight: 'calc(41.667vh - 1rem)', maxHeight: 'calc(41.667vh - 1rem)', border: '3px solid #3b82f6'}}>
+        <div className="content-card modern-shadow p-3 overflow-hidden led-border-blue" style={{height: 'calc(41.667vh - 1rem)', minHeight: 'calc(41.667vh - 1rem)', maxHeight: 'calc(41.667vh - 1rem)', background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)'}}>
           <div className="d-flex align-items-center mb-4">
             <div className="me-3" style={{width: '4px', height: '2rem', background: 'linear-gradient(to bottom, #10b981, #059669)', borderRadius: '2px'}}></div>
             <h2 className="h5 fw-bold text-dark headline-text mb-0">
@@ -357,7 +357,7 @@ export default function DigitalSignage() {
                      padding: '1.5rem',
                      borderRadius: '12px',
                      borderLeft: '4px solid #10b981',
-                     animation: 'slideIn 0.5s ease-in-out'
+                     animation: 'slideIn 0.6s ease-out'
                    }}>
                 <h3 className="fw-bold text-dark h5 headline-text mb-3">{currentReminderItem.title}</h3>
                 <p className="text-muted body-text mb-3 lh-lg">{currentReminderItem.content}</p>
@@ -399,7 +399,7 @@ export default function DigitalSignage() {
         </div>
 
         {/* Deadlines */}
-        <div className="content-card modern-shadow p-3 overflow-hidden" style={{height: 'calc(33.333vh - 1rem)', minHeight: 'calc(33.333vh - 1rem)', maxHeight: 'calc(33.333vh - 1rem)', background: 'linear-gradient(135deg, rgba(30, 107, 123, 0.1) 0%, rgba(19, 78, 74, 0.1) 100%)', border: '3px solid #ef4444'}}>
+        <div className="content-card modern-shadow p-3 overflow-hidden led-border-red" style={{height: 'calc(33.333vh - 1rem)', minHeight: 'calc(33.333vh - 1rem)', maxHeight: 'calc(33.333vh - 1rem)', background: 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)'}}>
           <div className="d-flex align-items-center mb-4">
             <div className="me-3" style={{width: '4px', height: '2rem', background: 'linear-gradient(to bottom, #ef4444, #dc2626)', borderRadius: '2px'}}></div>
             <h2 className="h5 fw-bold text-dark headline-text mb-0">
@@ -429,7 +429,7 @@ export default function DigitalSignage() {
                          padding: '1.5rem',
                          borderRadius: '12px',
                          borderLeft: `4px solid ${isUrgent ? '#ef4444' : config.border}`,
-                         animation: 'slideIn 0.5s ease-in-out'
+                         animation: 'slideIn 0.6s ease-out'
                        }}>
                     <h3 className={`fw-bold headline-text h5 mb-3`} style={{color: isUrgent ? '#991b1b' : config.text}}>
                       {currentDeadlineItem.title}
