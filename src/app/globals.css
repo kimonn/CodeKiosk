@@ -1,0 +1,253 @@
+:root {
+  --primary-blue: #1e3a8a;
+  --primary-blue-light: #3b82f6;
+  --primary-blue-dark: #1e40af;
+  --accent-orange: #f97316;
+  --accent-orange-light: #fb923c;
+  --accent-orange-dark: #ea580c;
+  --success-green: #059669;
+  --warning-amber: #d97706;
+  --danger-red: #dc2626;
+  --text-light: #64748b;
+  --background-light: #f1f5f9;
+  --background-white: #ffffff;
+  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-inter);
+}
+
+body {
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+/* Custom scrollbar for content areas */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-blue) #f1f5f9;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--primary-blue);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-blue-dark);
+}
+
+/* Blue gradient backgrounds */
+.blue-gradient {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+}
+
+.blue-gradient-light {
+  background: linear-gradient(135deg, var(--primary-blue-light) 0%, var(--primary-blue) 100%);
+}
+
+/* Orange accent elements */
+.orange-accent {
+  color: var(--accent-orange);
+}
+
+.bg-orange-accent {
+  background-color: var(--accent-orange);
+}
+
+/* Professional shadows */
+.modern-shadow {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.card-shadow {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Typography styles */
+.headline-text {
+  font-family: var(--font-inter);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.body-text {
+  font-family: var(--font-inter);
+  line-height: 1.6;
+}
+
+/* Animation utilities */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Content area styling */
+.content-card {
+  background: white;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.content-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+/* Bootstrap custom utilities */
+.h-100vh {
+  height: 100vh;
+}
+
+.bg-teal {
+  background-color: var(--primary-teal) !important;
+}
+
+.bg-teal-light {
+  background-color: var(--primary-teal-light) !important;
+}
+
+.bg-teal-dark {
+  background-color: var(--primary-teal-dark) !important;
+}
+
+.text-teal {
+  color: var(--primary-teal) !important;
+}
+
+.text-teal-light {
+  color: var(--primary-teal-light) !important;
+}
+
+.text-teal-dark {
+  color: var(--primary-teal-dark) !important;
+}
+
+.border-blue {
+  border-color: var(--primary-blue) !important;
+}
+
+.border-orange {
+  border-color: var(--accent-orange) !important;
+}
+
+.btn-blue {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+  color: white;
+}
+
+.btn-blue:hover {
+  background-color: var(--primary-blue-dark);
+  border-color: var(--primary-blue-dark);
+  color: white;
+}
+
+.btn-orange {
+  background-color: var(--accent-orange);
+  border-color: var(--accent-orange);
+  color: white;
+}
+
+.btn-orange:hover {
+  background-color: var(--accent-orange-dark);
+  border-color: var(--accent-orange-dark);
+  color: white;
+}
+
+/* Animation keyframes */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slide-up 0.5s ease-out;
+}
+
+/* Fixed layout for digital signage */
+.content-card {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.content-card > * {
+  flex-shrink: 0;
+}
+
+/* Ensure consistent viewport sizing */
+.h-100vh {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  min-height: 100vh !important;
+}
+
+/* Additional overflow protection for right column sections */
+.content-card {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-card * {
+  box-sizing: border-box;
+}
+
+
+
+/* Strict viewport containment */
+body, html {
+  overflow: hidden;
+  height: 100vh;
+  max-height: 100vh;
+}
