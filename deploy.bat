@@ -14,17 +14,21 @@ echo 2. Install Dependencies Only
 echo 3. Build Application Only
 echo 4. Start Application Only
 echo 5. Install, Build and Start (Complete Setup)
-echo 6. Exit
+echo 6. Build Docker Image
+echo 7. Run with Docker
+echo 8. Exit
 echo.
 
-set /p choice=Enter your choice (1-6): 
+set /p choice=Enter your choice (1-8): 
 
 if "%choice%"=="1" goto FULL_DEPLOY
 if "%choice%"=="2" goto INSTALL_DEPS
 if "%choice%"=="3" goto BUILD_APP
 if "%choice%"=="4" goto START_APP
 if "%choice%"=="5" goto COMPLETE_SETUP
-if "%choice%"=="6" goto EXIT_SCRIPT
+if "%choice%"=="6" goto BUILD_DOCKER
+if "%choice%"=="7" goto RUN_DOCKER
+if "%choice%"=="8" goto EXIT_SCRIPT
 
 echo Invalid choice. Please try again.
 echo.
@@ -118,6 +122,28 @@ echo Admin panel will be available at http://localhost:3000/admin
 echo Press Ctrl+C to stop the server
 echo.
 call npm start
+goto MENU
+
+:BUILD_DOCKER
+echo.
+echo Building Docker image...
+docker build -t codekiosk .
+if %errorlevel% neq 0 (
+    echo Error: Failed to build Docker image.
+) else (
+    echo Docker image built successfully.
+)
+pause
+goto MENU
+
+:RUN_DOCKER
+echo.
+echo Running application in Docker...
+echo Application will start on http://localhost:3000
+echo Admin panel will be available at http://localhost:3000/admin
+echo Press Ctrl+C to stop the container
+echo.
+docker run -p 3000:3000 codekiosk
 goto MENU
 
 :EXIT_SCRIPT

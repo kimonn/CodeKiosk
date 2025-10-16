@@ -1,0 +1,20 @@
+version: '3.8'
+
+# This is an example override file for development
+# Rename this file to docker-compose.override.yml to use it
+# It will override the default docker-compose.yml settings
+
+services:
+  codekiosk:
+    # Mount local directories for development
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./data:/app/data
+      - ./uploads:/app/uploads
+      - ./public/uploads:/app/public/uploads
+    # Enable development mode
+    environment:
+      - NODE_ENV=development
+    # Use development command
+    command: npm run dev

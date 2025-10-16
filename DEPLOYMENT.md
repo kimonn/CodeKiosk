@@ -7,6 +7,7 @@ This document provides instructions for deploying the Digital Signage System (Co
 - Node.js 18.x or higher
 - npm 8.x or higher
 - Git (for version control)
+- Docker (optional, for containerized deployment)
 
 ## Windows Batch Scripts
 
@@ -68,47 +69,59 @@ The application uses file-based storage by default and doesn't require any envir
 - Configuring HTTPS for secure connections
 - Setting up reverse proxy (nginx, Apache) for better performance
 
-### 3. Docker Deployment (Optional)
+### 3. Docker Deployment (Recommended for Production)
 
-You can containerize the application using Docker:
+You can containerize the application using Docker for easier deployment and better isolation:
 
-1. Create a Dockerfile in the project root:
-   ```dockerfile
-   FROM node:18-alpine AS deps
-   WORKDIR /app
-   COPY package.json package-lock.json ./
-   RUN npm ci
+#### Prerequisites
+- Docker installed on your system
+- Docker Compose (optional, but recommended)
 
-   FROM node:18-alpine AS builder
-   WORKDIR /app
-   COPY --from=deps /app/node_modules ./node_modules
-   COPY . .
-   RUN npm run build
+#### Building and Running with Docker
 
-   FROM node:18-alpine AS runner
-   WORKDIR /app
-
-   ENV NODE_ENV production
-
-   RUN addgroup --system --gid 1001 nodejs
-   RUN adduser --system --uid 1001 nextjs
-
-   COPY --from=builder /app/public ./public
-   COPY --from=builder /app/.next/standalone ./
-   COPY --from=builder /app/.next/static ./.next/static
-
-   USER nextjs
-
-   EXPOSE 3000
-
-   CMD ["node", "server.js"]
-   ```
-
-2. Build and run the Docker container:
+1. Build the Docker image:
    ```bash
-   docker build -t code-kiosk .
-   docker run -p 3000:3000 code-kiosk
+   docker build -t codekiosk .
    ```
+
+2. Run the container:
+   ```bash
+   docker run -p 3000:3000 codekiosk
+   ```
+
+#### Using Docker Compose (Recommended)
+
+1. Use the provided docker-compose.yml file:
+   ```bash
+   docker-compose up -d
+   ```
+
+2. The application will be available at `http://localhost:3000`
+
+#### Development with Docker
+
+For development purposes, you can use the docker-compose.override.yml.example file:
+
+1. Copy the example file:
+   ```bash
+   cp docker-compose.override.yml.example docker-compose.override.yml
+   ```
+
+2. Start the development environment:
+   ```bash
+   docker-compose up
+   ```
+
+This will mount your local source code directories into the container, allowing for live reloading during development.
+
+#### Docker Volumes
+
+The Docker configuration includes volumes for:
+- `data/` - Application data storage
+- `uploads/` - Uploaded images and videos
+- `public/uploads/` - Publicly accessible uploaded files
+
+These volumes ensure that your data persists even when containers are recreated.
 
 ## File Structure for Production
 

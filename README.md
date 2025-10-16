@@ -52,6 +52,27 @@ For Windows users, we've provided convenient batch scripts for easier installati
 
 Simply double-click any of these files to run them.
 
+## Docker Deployment
+
+You can also deploy this application using Docker:
+
+1. Build the Docker image:
+   ```bash
+   docker build -t codekiosk .
+   ```
+
+2. Run the container:
+   ```bash
+   docker run -p 3000:3000 codekiosk
+   ```
+
+Or use Docker Compose:
+```bash
+docker-compose up -d
+```
+
+The application will be available at [http://localhost:3000](http://localhost:3000).
+
 ## Deployment
 
 To deploy this application:
