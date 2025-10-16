@@ -1,0 +1,9 @@
+# Set default behavior to automatically normalize line endings
+* text=auto
+
+# Force specific files to have Unix line endings
+*.sh text eol=lf
+*.bat text eol=crlf
+
+# Denormalize specific files if needed
+*.md text eol=lf
